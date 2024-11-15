@@ -13,7 +13,7 @@ scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis
 #creds_str = st.secrets["google_sheets_credentials"]
 
 # Converter a string JSON em um dicionário
-creds_dict = toml.load("secrets.toml")["google_sheets_credentials"]
+creds_dict = st.secrets["google_sheets_credentials"]
 
 
 # Obter as credenciais do serviço
@@ -189,9 +189,9 @@ def saida_vendas():
 
 def visualizar_dados():
     vendas_df, registro_estoque_df = init_dataframes()
-    config = toml.load("secrets.toml")
+    
 
-    senha_armazenada = config["auth"]["senha"] # Altere para uma senha segura
+    senha_armazenada = st.secrets["auth"] # Altere para uma senha segura
     entrada_senha = st.sidebar.text_input("Digite a senha para visualizar dados:", type="password")
 
     if entrada_senha == senha_armazenada:
