@@ -191,7 +191,7 @@ def visualizar_dados():
     vendas_df, registro_estoque_df = init_dataframes()
     
 
-    senha_armazenada = st.secrets["auth"] # Altere para uma senha segura
+    senha_armazenada = st.secrets[general] # Altere para uma senha segura
     entrada_senha = st.sidebar.text_input("Digite a senha para visualizar dados:", type="password")
 
     if entrada_senha == senha_armazenada:
