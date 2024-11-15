@@ -4,18 +4,20 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
 import os
+from google.oauth2.service_account import Credentials
 import json
-
-
+import toml
 # Configurar credenciais e acesso à planilha
-scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/spreadsheets",
-         "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
+scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
 
-# Substitua 'path_to_credentials.json' pelo caminho para seu arquivo de credenciais JSON
+#creds_str = st.secrets["google_sheets_credentials"]
+
+# Converter a string JSON em um dicionário
+creds_dict = toml.load("secrets.toml")["google_sheets_credentials"]
 
 
-creds_dict = st.secrets["general"]["google_sheets_credentials"]
-creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+# Obter as credenciais do serviço
+creds = Credentials.from_service_account_info(creds_dict, scopes=scope)
 client = gspread.authorize(creds)
 
 
@@ -187,10 +189,12 @@ def saida_vendas():
 
 def visualizar_dados():
     vendas_df, registro_estoque_df = init_dataframes()
-    senha = st.secrets["general"]["VIEW_DATA_PASSWORD"]  # Altere para uma senha segura
+    config = toml.load("secrets.toml")
+
+    senha_armazenada = config["auth"]["senha"] # Altere para uma senha segura
     entrada_senha = st.sidebar.text_input("Digite a senha para visualizar dados:", type="password")
 
-    if entrada_senha == senha:
+    if entrada_senha == senha_armazenada:
         st.header("Registro de Estoque")
 
 
@@ -241,4 +245,3 @@ elif page == "Saída de Vendas":
     saida_vendas()
 else:
     visualizar_dados()
-
